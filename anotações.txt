@@ -1,0 +1,12 @@
+atualizar o gcc para a versão que suporta o C23: 
+sudo apt update
+sudo apt install gcc-14 g++-14
+
+
+
+struct arvoreB* criarArvoreB(int32_t t_arvore);
+    //Gabriel: podemos assumir que a entrada vai ser um int mesmo? No main do professor vai ter validação? 
+
+
+
+
