@@ -82,15 +82,36 @@ struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave,int32_t* idxEnc
 /*Retorna o endereço do nodo que contém a chave sendo buscada, e insere o índice onde essa
 chave se encontra dentro de idxEncontrado. Caso não encontre a chave, retorna NULL e
 insere -1 em idxEncontrado.*/
+void apaga_valores_nodo(struct nodo *no){
+        free(no->chaves);
+        free(no->filhos);
+        free(no);
+        return;
+}
 
-void deletarArvore(struct arvoreB* arvore){
+void libera_nodos(struct nodo *no){
 
-    if(arvore->raiz == NULL){
-        free(arvore->raiz);
+    if(no == NULL){
         return;
     }
+    
+    
+    for(int i=0;i <= no->numero_chaves;i++){
+        libera_nodos(no->filhos[i]);
+    }
+    apaga_valores_nodo(no);
+    return;
+}
 
-
+void deletarArvore(struct arvoreB* arvore){
+    if(arvore == NULL){
+        return;
+    }
+    
+    libera_nodos(arvore->raiz);
+    free(arvore);    
+    
+    return;
 };
 /*Libera toda a memória alocada. Ou seja, todos os nodos são liberados, além da struct
 arvoreB passada como parâmetro.*/

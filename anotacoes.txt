@@ -10,3 +10,5 @@ struct arvoreB* criarArvoreB(int32_t t_arvore);
 
 
 
+Nesse comentario do professor para a função de desalocação de arvore entendi que tem 2 structss, struct ArvoreB e struct nodo/*Libera toda a memória alocada. Ou seja, todos os nodos são liberados, além da struct
+arvoreB passada como parâmetro.*/
