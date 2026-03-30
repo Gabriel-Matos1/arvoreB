@@ -47,17 +47,31 @@ I (n:1) [2] I (n:3) [6 8 10]
 Nivel 2
 ----//----
 F (n:1) [1] F (n:1) [3] F (n:1) [5] F (n:1) [7] F (n:1) [9] F (n:2) [11 12]*/
+void imprimirNo(struct nodo *no){
+    if(no == NULL){
+        return;
+    }
+
+    int i =0;
+    while(i < no->numero_chaves){
+        imprimirNo(no->filhos[i]);
+        printf("%d ", no->chaves[i]);
+        i++;
+    }
+
+    imprimirNo(no->filhos[i]); 
+    return;
+}
 
 void imprimirEmOrdem(struct arvoreB* arvore){
-    if(arvore->raiz == NULL){
+    if (arvore == NULL || arvore->raiz == NULL) {
         return;
-    }    
-    printf(arvore->raiz);
-    int i=0;
-    while(i<arvore->raiz->numero_chaves){
-    imprimirEmOrdem(arvore->raiz->filhos[i]);
     }
-};
+    printf("\nEm ordem: ");
+    imprimirNo(arvore->raiz);
+    printf("\n");
+    return;
+}
 /*Imprime as chaves da árvore em ordem, seguindo o formato exemplificado a seguir:
 Em ordem: 1 2 3 4 5 6 7 8 9 10 11 12*/
 
