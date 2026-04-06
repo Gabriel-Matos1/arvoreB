@@ -20,11 +20,131 @@ struct arvoreB* criarArvoreB(int32_t t_arvore){
     return novo;
 }
 
+struct nodo* alocarNodo(struct arvoreB * arvore){
+    struct nodo* novo = (nodo*) malloc(sizeof(nodo));
+    if(!novo){
+        fprintf(stderr,"Falha ao alocar memória.\n");
+        exit(1);
+    }
 
+    int tamanho_t =2*arvore->t_arvore;
+    novo->chaves = (int32_t*) malloc(sizeof(int32_t) * ((tamanho_t)-1));
+    if(!novo->chaves){
+        fprintf(stderr,"Falha ao alocar memória.\n");
+        exit(1);
+    }
+    novo->filhos = malloc(sizeof(*novo->filhos) * tamanho_t);
+    if(!novo->filhos){
+        fprintf(stderr,"Falha ao alocar memória.\n");
+        exit(1);
+    }
+
+    for(int i=0; i<tamanho_t; i++){
+        novo->filhos[i] = NULL;
+    }
+    novo->numero_chaves = 0;
+    novo->folha = true; 
+    return novo;
+}
 //Aloca uma struct do tipo arvoreB com um valor de T específico e a retorna.
 
-void inserirArvoreB(struct arvoreB* arvore, int32_t chave){
 
+void dividirFilho(struct nodo *nodo, int i, arvoreB *arvore){
+    
+    struct nodo* novo = nodo->filhos[i];
+    struct nodo* auxiliar = alocarNodo(arvore);
+    int t= arvore->t_arvore;    
+
+    
+    auxiliar->folha = novo->folha;
+    auxiliar->numero_chaves = t-1; 
+    
+    for(int j=0; j<(t-1); j++){
+        auxiliar->chaves[j] = novo->chaves[j+t];
+
+    }
+    if(!novo->folha){
+        for(int j=0; j< t; j++){
+            auxiliar->filhos[j] = novo->filhos[j+t];
+        }
+    }
+    
+    novo->numero_chaves = t-1;
+    
+    for(int q = (nodo->numero_chaves+1); q>(i+1); q--){
+        nodo->filhos[q] = nodo->filhos[q-1];
+    }
+    
+    nodo->filhos[i+1] = auxiliar;
+
+    for(int q = (nodo->numero_chaves); q>(i); q--){
+        nodo->chaves[q] = nodo->chaves[q-1];
+    }
+
+    nodo->chaves[i] = novo->chaves[t-1];
+    nodo->numero_chaves = nodo->numero_chaves+1;
+
+    
+    return;
+}
+
+
+void inserirNaoCheio(struct nodo *nodo, int32_t chave, arvoreB * arvore){
+    int num = nodo->numero_chaves-1;
+
+    if(nodo->folha){
+        while(num>=0 && chave < nodo->chaves[num]){
+            nodo->chaves[num+1] = nodo->chaves[num];
+            num--;
+        }
+        nodo->chaves[num+1] = chave;
+        nodo->numero_chaves++;
+        return;
+    }else{
+        while(num>=0 && chave < nodo->chaves[num]){
+            num--;
+        }
+        num++;
+        if(nodo->filhos[num]->numero_chaves == (2*arvore->t_arvore - 1)){
+            dividirFilho(nodo, num, arvore);
+            if(chave > nodo->chaves[num]){
+                num++;
+            }
+        }
+        inserirNaoCheio(nodo->filhos[num], chave, arvore);
+    }
+}
+
+struct nodo* dividirRaiz(struct arvoreB* arvore){
+    struct nodo * nova = alocarNodo(arvore);
+    nova->folha = false;
+    nova->numero_chaves = 0;
+    nova->filhos[0] = arvore->raiz;
+    arvore->raiz= nova;
+    dividirFilho(nova, 0, arvore);
+    
+    return nova;
+}
+
+void inserirArvoreB(struct arvoreB* arvore, int32_t chave){
+    if(arvore->raiz == NULL){
+        struct nodo* raiz = alocarNodo(arvore);
+        raiz->chaves[0] = chave;
+        raiz->numero_chaves = 1;
+        arvore->raiz = raiz;
+        return;
+    }
+
+
+    struct nodo* r = arvore->raiz;
+
+    if(r->numero_chaves == ((2*arvore->t_arvore)-1)){
+        struct nodo * s = dividirRaiz(arvore);
+        inserirNaoCheio(s, chave, arvore);    
+    }   else{
+        inserirNaoCheio(r, chave,arvore);
+    }
+    return;
 }
 //Insere a chave na Árvore B.
 
