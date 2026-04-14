@@ -28,7 +28,7 @@ int main() {
     // 🔹 Impressão em ordem
     imprimirEmOrdem(arvore);
 
-    // 🔹 Teste de busca (mesmo que ainda não implementada)
+    // 🔹 Teste de busca
     int32_t idx;
     int32_t chave_busca = 12;
 

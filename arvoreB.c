@@ -195,8 +195,36 @@ void imprimirEmOrdem(struct arvoreB* arvore){
 /*Imprime as chaves da árvore em ordem, seguindo o formato exemplificado a seguir:
 Em ordem: 1 2 3 4 5 6 7 8 9 10 11 12*/
 
-struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave,int32_t* idxEncontrado){
+struct nodo* buscaAuxiliar(struct nodo* inicial, int32_t chave, int32_t* idxEncontrado){
+    int i = 0;
+    while(i < inicial->numero_chaves && chave > inicial->chaves[i]){
+        i++;
+    }
 
+    if(i < inicial->numero_chaves && chave == inicial->chaves[i]){
+        *idxEncontrado = i;
+        
+        return inicial;
+    }
+    else{
+        if(inicial->folha == 1){
+            *idxEncontrado = -1;
+
+            return NULL;
+        }
+    }
+
+    return buscaAuxiliar(inicial->filhos[i], chave, idxEncontrado);
+}
+
+struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave, int32_t* idxEncontrado){
+    if (arvore->raiz == NULL){
+        *idxEncontrado = -1;
+
+        return NULL;
+    }
+
+    return (buscaAuxiliar(arvore->raiz, chave, idxEncontrado));
 }
 /*union ou struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave,int32_t* idxEncontrado);*/
 /*Retorna o endereço do nodo que contém a chave sendo buscada, e insere o índice onde essa
