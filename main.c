@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "arvoreB.h"
+#include "fila.h"
 
 int main() {
     int32_t t = 3;
@@ -24,6 +25,10 @@ int main() {
         printf("Inserindo %d...\n", valores[i]);
         inserirArvoreB(arvore, valores[i]);
     }
+
+    // 🔹 Impressão em largura
+
+    imprimirArvoreB(arvore);
 
     // 🔹 Impressão em ordem
     imprimirEmOrdem(arvore);

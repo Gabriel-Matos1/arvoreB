@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "arvoreB.h"
+#include "fila.h"
 #include <stdlib.h>
+
 struct arvoreB* criarArvoreB(int32_t t_arvore){
     //Gabriel: podemos assumir que a entrada vai ser um int mesmo? No main do professor vai ter validação? 
     if(t_arvore <= 0){
@@ -148,7 +150,58 @@ void inserirArvoreB(struct arvoreB* arvore, int32_t chave){
 }
 //Insere a chave na Árvore B.
 
-void imprimirArvoreB(struct arvoreB* arvore);
+void imprimirArvoreB(struct arvoreB* arvore){
+    if (arvore->raiz == NULL)
+        return;
+
+    struct fila *f = fila_cria();
+    if(f == NULL){
+        fprintf(stderr,"Falha ao criar fila.\n");
+        exit(1);
+    }
+
+    enqueue(f, arvore->raiz);
+    int nivel = 0;
+    char tipo;
+
+    while (!fila_vazia(f)) {
+        int tamanho = fila_tamanho(f);
+        printf("----//----\n");
+        printf("Nivel %d\n", nivel);
+        printf("----//----\n");
+
+        for (int i = 0; i < tamanho; i++) {
+            struct nodo *atual;
+            dequeue(f, &atual);
+
+            if(atual->folha == 0){
+                tipo = 'I';
+            }
+            else{
+                tipo = 'F';
+            }
+                
+            printf("%c (n:%d) ", tipo, atual->numero_chaves);
+            for(int j = 0; j < atual->numero_chaves; j++){
+                printf("[%d] ", atual->chaves[j]);
+            }
+
+            if(!atual->folha){
+                for (int k = 0; k <= atual->numero_chaves; k++){
+                    enqueue(f, atual->filhos[k]);
+                }
+            }
+        }
+
+        printf("\n");  // fim do nível
+        nivel++;
+    }
+
+
+    fila_destroi(&f);
+
+    return;
+}
 
 /*Imprime a Árvore B na tela em largura, seguindo estritamente o padrão do exemplo (não
 seguir o padrão invalidará sua função).
