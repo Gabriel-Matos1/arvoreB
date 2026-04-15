@@ -1,11 +1,15 @@
+/*
+ALUNOS: GABRIEL MATOS (GRR20240011), LEONARDO PIRES (GRR20232376)
+DISCIPLINA DE ALGORITMOS 3 
+PROVA PRÁTICA 1 
+ABRIL DE 2026
+*/
 #include <stdio.h>
 #include <inttypes.h>
-#include "arvoreB.h"
-#include "fila.h"
 #include <stdlib.h>
+#include "arvoreB.h"
 
 struct arvoreB* criarArvoreB(int32_t t_arvore){
-    //Gabriel: podemos assumir que a entrada vai ser um int mesmo? No main do professor vai ter validação? 
     if(t_arvore <= 0){
         printf("Valor de tamanho invalido.");
         return NULL;
@@ -22,6 +26,7 @@ struct arvoreB* criarArvoreB(int32_t t_arvore){
     return novo;
 }
 
+/*Aloca uma struct do tipo arvoreB com um valor de T específico e a retorna.*/
 struct nodo* alocarNodo(struct arvoreB * arvore){
     struct nodo* novo = (nodo*) malloc(sizeof(nodo));
     if(!novo){
@@ -48,11 +53,8 @@ struct nodo* alocarNodo(struct arvoreB * arvore){
     novo->folha = true; 
     return novo;
 }
-//Aloca uma struct do tipo arvoreB com um valor de T específico e a retorna.
-
 
 void dividirFilho(struct nodo *nodo, int i, arvoreB *arvore){
-    
     struct nodo* novo = nodo->filhos[i];
     struct nodo* auxiliar = alocarNodo(arvore);
     int t= arvore->t_arvore;    
@@ -128,6 +130,7 @@ struct nodo* dividirRaiz(struct arvoreB* arvore){
     return nova;
 }
 
+/*Insere a chave na Árvore B.*/
 void inserirArvoreB(struct arvoreB* arvore, int32_t chave){
     if(arvore->raiz == NULL){
         struct nodo* raiz = alocarNodo(arvore);
@@ -148,8 +151,8 @@ void inserirArvoreB(struct arvoreB* arvore, int32_t chave){
     }
     return;
 }
-//Insere a chave na Árvore B.
 
+/* imprime em largura com auxilio de fila */
 void imprimirArvoreB(struct arvoreB* arvore){
     if (arvore->raiz == NULL)
         return;
@@ -166,7 +169,7 @@ void imprimirArvoreB(struct arvoreB* arvore){
 
     while (!fila_vazia(f)) {
         int tamanho = fila_tamanho(f);
-        printf("----//----\n");
+        printf("\n----//----\n");
         printf("Nivel %d\n", nivel);
         printf("----//----\n");
 
@@ -185,6 +188,7 @@ void imprimirArvoreB(struct arvoreB* arvore){
             for(int j = 0; j < atual->numero_chaves; j++){
                 printf("[%d] ", atual->chaves[j]);
             }
+            printf(" ");
 
             if(!atual->folha){
                 for (int k = 0; k <= atual->numero_chaves; k++){
@@ -193,7 +197,6 @@ void imprimirArvoreB(struct arvoreB* arvore){
             }
         }
 
-        printf("\n");  // fim do nível
         nivel++;
     }
 
@@ -203,23 +206,6 @@ void imprimirArvoreB(struct arvoreB* arvore){
     return;
 }
 
-/*Imprime a Árvore B na tela em largura, seguindo estritamente o padrão do exemplo (não
-seguir o padrão invalidará sua função).
-No exemplo, ao imprimir a lista de nodos do nível, faça no formato F/I (n:NUMEROCHAVES)
-[chave0<espaço>chave1<espaço>...]<espaço><espaço>PROXIMONODO onde F/I indica
-se o nodo é uma Folha ou um nodo Interno
-----//----
-Nivel 0
-----//----
-I (n:1) [4]
-----//----
-Nivel 1
-----//----
-I (n:1) [2] I (n:3) [6 8 10]
-----//----
-Nivel 2
-----//----
-F (n:1) [1] F (n:1) [3] F (n:1) [5] F (n:1) [7] F (n:1) [9] F (n:2) [11 12]*/
 void imprimirNo(struct nodo *no){
     if(no == NULL){
         return;
@@ -236,6 +222,7 @@ void imprimirNo(struct nodo *no){
     return;
 }
 
+/*Imprime as chaves da árvore em ordem crescente*/
 void imprimirEmOrdem(struct arvoreB* arvore){
     if (arvore == NULL || arvore->raiz == NULL) {
         return;
@@ -245,8 +232,6 @@ void imprimirEmOrdem(struct arvoreB* arvore){
     printf("\n");
     return;
 }
-/*Imprime as chaves da árvore em ordem, seguindo o formato exemplificado a seguir:
-Em ordem: 1 2 3 4 5 6 7 8 9 10 11 12*/
 
 struct nodo* buscaAuxiliar(struct nodo* inicial, int32_t chave, int32_t* idxEncontrado){
     int i = 0;
@@ -270,6 +255,9 @@ struct nodo* buscaAuxiliar(struct nodo* inicial, int32_t chave, int32_t* idxEnco
     return buscaAuxiliar(inicial->filhos[i], chave, idxEncontrado);
 }
 
+/*Retorna o endereço do nodo que contém a chave sendo buscada, e insere o índice onde essa
+chave se encontra dentro de idxEncontrado. Caso não encontre a chave, retorna NULL e
+insere -1 em idxEncontrado.*/
 struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave, int32_t* idxEncontrado){
     if (arvore->raiz == NULL){
         *idxEncontrado = -1;
@@ -279,10 +267,7 @@ struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave, int32_t* idxEn
 
     return (buscaAuxiliar(arvore->raiz, chave, idxEncontrado));
 }
-/*union ou struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave,int32_t* idxEncontrado);*/
-/*Retorna o endereço do nodo que contém a chave sendo buscada, e insere o índice onde essa
-chave se encontra dentro de idxEncontrado. Caso não encontre a chave, retorna NULL e
-insere -1 em idxEncontrado.*/
+
 void apaga_valores_nodo(struct nodo *no){
         free(no->chaves);
         free(no->filhos);
@@ -290,6 +275,8 @@ void apaga_valores_nodo(struct nodo *no){
         return;
 }
 
+/*Libera toda a memória alocada. Ou seja, todos os nodos são liberados, além da struct
+arvoreB passada como parâmetro.*/
 void libera_nodos(struct nodo *no){
 
     if(no == NULL){
@@ -314,5 +301,3 @@ void deletarArvore(struct arvoreB* arvore){
     
     return;
 };
-/*Libera toda a memória alocada. Ou seja, todos os nodos são liberados, além da struct
-arvoreB passada como parâmetro.*/
