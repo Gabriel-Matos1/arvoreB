@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/gabrielmatos/Documentos/alg3/arvoreB",
-      "program": "/home/gabrielmatos/Documentos/alg3/arvoreB/build/Debug/outDebug",
+      "cwd": "/home/gabrielmatos/Documentos/alg3/prova1_GRR20240011_GRR20232376(2)/prova1_GRR20240011_GRR20232376",
+      "program": "/home/gabrielmatos/Documentos/alg3/prova1_GRR20240011_GRR20232376(2)/prova1_GRR20240011_GRR20232376/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
