@@ -1,7 +1,7 @@
 /*
 ALUNOS: GABRIEL MATOS (GRR20240011), LEONARDO PIRES (GRR20232376)
-DISCIPLINA DE ALGORITMOS 3 
-PROVA PRÁTICA 1 
+DISCIPLINA DE ALGORITMOS 3
+PROVA PRÁTICA 1
 ABRIL DE 2026
 */
 #include <stdio.h>
@@ -9,14 +9,17 @@ ABRIL DE 2026
 #include <stdlib.h>
 #include "arvoreB.h"
 
-struct arvoreB* criarArvoreB(int32_t t_arvore){
-    if(t_arvore <= 0){
+struct arvoreB *criarArvoreB(int32_t t_arvore)
+{
+    if (t_arvore <= 0)
+    {
         printf("Valor de tamanho invalido.");
         return NULL;
-    }    
+    }
 
-    struct arvoreB *novo = (arvoreB*) malloc(sizeof(arvoreB));
-    if(!novo){
+    struct arvoreB *novo = (arvoreB *)malloc(sizeof(arvoreB));
+    if (!novo)
+    {
         fprintf(stderr, "Falha ao alocar memoria.\n");
         exit(1);
     }
@@ -27,91 +30,106 @@ struct arvoreB* criarArvoreB(int32_t t_arvore){
 }
 
 /*Aloca uma struct do tipo arvoreB com um valor de T específico e a retorna.*/
-struct nodo* alocarNodo(struct arvoreB * arvore){
-    struct nodo* novo = (nodo*) malloc(sizeof(nodo));
-    if(!novo){
-        fprintf(stderr,"Falha ao alocar memória.\n");
+struct nodo *alocarNodo(struct arvoreB *arvore)
+{
+    struct nodo *novo = (nodo *)malloc(sizeof(nodo));
+    if (!novo)
+    {
+        fprintf(stderr, "Falha ao alocar memória.\n");
         exit(1);
     }
 
-    int tamanho_t =2*arvore->t_arvore;
-    novo->chaves = (int32_t*) malloc(sizeof(int32_t) * ((tamanho_t)-1));
-    if(!novo->chaves){
-        fprintf(stderr,"Falha ao alocar memória.\n");
+    int tamanho_t = 2 * arvore->t_arvore;
+    novo->chaves = (int32_t *)malloc(sizeof(int32_t) * ((tamanho_t)-1));
+    if (!novo->chaves)
+    {
+        fprintf(stderr, "Falha ao alocar memória.\n");
         exit(1);
     }
     novo->filhos = malloc(sizeof(*novo->filhos) * tamanho_t);
-    if(!novo->filhos){
-        fprintf(stderr,"Falha ao alocar memória.\n");
+    if (!novo->filhos)
+    {
+        fprintf(stderr, "Falha ao alocar memória.\n");
         exit(1);
     }
 
-    for(int i=0; i<tamanho_t; i++){
+    for (int i = 0; i < tamanho_t; i++)
+    {
         novo->filhos[i] = NULL;
     }
     novo->numero_chaves = 0;
-    novo->folha = true; 
+    novo->folha = true;
     return novo;
 }
 
-void dividirFilho(struct nodo *nodo, int i, arvoreB *arvore){
-    struct nodo* novo = nodo->filhos[i];
-    struct nodo* auxiliar = alocarNodo(arvore);
-    int t= arvore->t_arvore;    
+void dividirFilho(struct nodo *nodo, int i, arvoreB *arvore)
+{
+    struct nodo *novo = nodo->filhos[i];
+    struct nodo *auxiliar = alocarNodo(arvore);
+    int t = arvore->t_arvore;
 
-    
     auxiliar->folha = novo->folha;
-    auxiliar->numero_chaves = t-1; 
-    
-    for(int j=0; j<(t-1); j++){
-        auxiliar->chaves[j] = novo->chaves[j+t];
+    auxiliar->numero_chaves = t - 1;
 
+    for (int j = 0; j < (t - 1); j++)
+    {
+        auxiliar->chaves[j] = novo->chaves[j + t];
     }
-    if(!novo->folha){
-        for(int j=0; j< t; j++){
-            auxiliar->filhos[j] = novo->filhos[j+t];
+    if (!novo->folha)
+    {
+        for (int j = 0; j < t; j++)
+        {
+            auxiliar->filhos[j] = novo->filhos[j + t];
         }
     }
-    
-    novo->numero_chaves = t-1;
-    
-    for(int q = (nodo->numero_chaves+1); q>(i+1); q--){
-        nodo->filhos[q] = nodo->filhos[q-1];
-    }
-    
-    nodo->filhos[i+1] = auxiliar;
 
-    for(int q = (nodo->numero_chaves); q>(i); q--){
-        nodo->chaves[q] = nodo->chaves[q-1];
+    novo->numero_chaves = t - 1;
+
+    for (int q = (nodo->numero_chaves + 1); q > (i + 1); q--)
+    {
+        nodo->filhos[q] = nodo->filhos[q - 1];
     }
 
-    nodo->chaves[i] = novo->chaves[t-1];
-    nodo->numero_chaves = nodo->numero_chaves+1;
+    nodo->filhos[i + 1] = auxiliar;
 
-    
+    for (int q = (nodo->numero_chaves); q > (i); q--)
+    {
+        nodo->chaves[q] = nodo->chaves[q - 1];
+    }
+
+    nodo->chaves[i] = novo->chaves[t - 1];
+    nodo->numero_chaves = nodo->numero_chaves + 1;
+
     return;
 }
 
+void inserirNaoCheio(struct nodo *nodo, int32_t chave, arvoreB *arvore)
+{
+    int num = nodo->numero_chaves - 1;
 
-void inserirNaoCheio(struct nodo *nodo, int32_t chave, arvoreB * arvore){
-    int num = nodo->numero_chaves-1;
-
-    if(nodo->folha){
-        while(num>=0 && chave < nodo->chaves[num]){
-            nodo->chaves[num+1] = nodo->chaves[num];
+    if (nodo->folha)
+    {
+        while (num >= 0 && chave < nodo->chaves[num])
+        {
+            nodo->chaves[num + 1] = nodo->chaves[num];
             num--;
         }
-        nodo->chaves[num+1] = chave;
+        nodo->chaves[num + 1] = chave;
         nodo->numero_chaves++;
         return;
-    }else{
-        while(num>=0 && chave < nodo->chaves[num]){
+    }
+    else
+    {
+        while (num >= 0 && chave < nodo->chaves[num])
+        {
             num--;
         }
         num++;
-        if(nodo->filhos[num]->numero_chaves == (2*arvore->t_arvore - 1)){
+        if (nodo->filhos[num]->numero_chaves == (2 * arvore->t_arvore - 1))
+        {
             dividirFilho(nodo, num, arvore);
-            if(chave > nodo->chaves[num]){
+            if (chave > nodo->chaves[num])
+            {
                 num++;
             }
         }
@@ -119,47 +137,54 @@ void inserirNaoCheio(struct nodo *nodo, int32_t chave, arvoreB * arvore){
     }
 }
 
-struct nodo* dividirRaiz(struct arvoreB* arvore){
-    struct nodo * nova = alocarNodo(arvore);
+struct nodo *dividirRaiz(struct arvoreB *arvore)
+{
+    struct nodo *nova = alocarNodo(arvore);
     nova->folha = false;
     nova->numero_chaves = 0;
     nova->filhos[0] = arvore->raiz;
-    arvore->raiz= nova;
+    arvore->raiz = nova;
     dividirFilho(nova, 0, arvore);
-    
+
     return nova;
 }
 
 /*Insere a chave na Árvore B.*/
-void inserirArvoreB(struct arvoreB* arvore, int32_t chave){
-    if(arvore->raiz == NULL){
-        struct nodo* raiz = alocarNodo(arvore);
+void inserirArvoreB(struct arvoreB *arvore, int32_t chave)
+{
+    if (arvore->raiz == NULL)
+    {
+        struct nodo *raiz = alocarNodo(arvore);
         raiz->chaves[0] = chave;
         raiz->numero_chaves = 1;
         arvore->raiz = raiz;
         return;
     }
 
+    struct nodo *r = arvore->raiz;
 
-    struct nodo* r = arvore->raiz;
-
-    if(r->numero_chaves == ((2*arvore->t_arvore)-1)){
-        struct nodo * s = dividirRaiz(arvore);
-        inserirNaoCheio(s, chave, arvore);    
-    }   else{
-        inserirNaoCheio(r, chave,arvore);
+    if (r->numero_chaves == ((2 * arvore->t_arvore) - 1))
+    {
+        struct nodo *s = dividirRaiz(arvore);
+        inserirNaoCheio(s, chave, arvore);
+    }
+    else
+    {
+        inserirNaoCheio(r, chave, arvore);
     }
     return;
 }
 
 /* imprime em largura com auxilio de fila */
-void imprimirArvoreB(struct arvoreB* arvore){
+void imprimirArvoreB(struct arvoreB *arvore)
+{
     if (arvore->raiz == NULL)
         return;
 
     struct fila *f = fila_cria();
-    if(f == NULL){
-        fprintf(stderr,"Falha ao criar fila.\n");
+    if (f == NULL)
+    {
+        fprintf(stderr, "Falha ao criar fila.\n");
         exit(1);
     }
 
@@ -167,31 +192,38 @@ void imprimirArvoreB(struct arvoreB* arvore){
     int nivel = 0;
     char tipo;
 
-    while (!fila_vazia(f)) {
+    while (!fila_vazia(f))
+    {
         int tamanho = fila_tamanho(f);
         printf("\n----//----\n");
         printf("Nivel %d\n", nivel);
         printf("----//----\n");
 
-        for (int i = 0; i < tamanho; i++) {
+        for (int i = 0; i < tamanho; i++)
+        {
             struct nodo *atual;
             dequeue(f, &atual);
 
-            if(atual->folha == 0){
+            if (atual->folha == 0)
+            {
                 tipo = 'I';
             }
-            else{
+            else
+            {
                 tipo = 'F';
             }
-                
+
             printf("%c (n:%d) ", tipo, atual->numero_chaves);
-            for(int j = 0; j < atual->numero_chaves; j++){
+            for (int j = 0; j < atual->numero_chaves; j++)
+            {
                 printf("[%d] ", atual->chaves[j]);
             }
             printf(" ");
 
-            if(!atual->folha){
-                for (int k = 0; k <= atual->numero_chaves; k++){
+            if (!atual->folha)
+            {
+                for (int k = 0; k <= atual->numero_chaves; k++)
+                {
                     enqueue(f, atual->filhos[k]);
                 }
             }
@@ -200,31 +232,35 @@ void imprimirArvoreB(struct arvoreB* arvore){
         nivel++;
     }
 
-
     fila_destroi(&f);
 
     return;
 }
 
-void imprimirNo(struct nodo *no){
-    if(no == NULL){
+void imprimirNo(struct nodo *no)
+{
+    if (no == NULL)
+    {
         return;
     }
 
-    int i =0;
-    while(i < no->numero_chaves){
+    int i = 0;
+    while (i < no->numero_chaves)
+    {
         imprimirNo(no->filhos[i]);
         printf("%d ", no->chaves[i]);
         i++;
     }
 
-    imprimirNo(no->filhos[i]); 
+    imprimirNo(no->filhos[i]);
     return;
 }
 
 /*Imprime as chaves da árvore em ordem crescente*/
-void imprimirEmOrdem(struct arvoreB* arvore){
-    if (arvore == NULL || arvore->raiz == NULL) {
+void imprimirEmOrdem(struct arvoreB *arvore)
+{
+    if (arvore == NULL || arvore->raiz == NULL)
+    {
         return;
     }
     printf("\nEm ordem: ");
@@ -233,19 +269,24 @@ void imprimirEmOrdem(struct arvoreB* arvore){
     return;
 }
 
-struct nodo* buscaAuxiliar(struct nodo* inicial, int32_t chave, int32_t* idxEncontrado){
+struct nodo *buscaAuxiliar(struct nodo *inicial, int32_t chave, int32_t *idxEncontrado)
+{
     int i = 0;
-    while(i < inicial->numero_chaves && chave > inicial->chaves[i]){
+    while (i < inicial->numero_chaves && chave > inicial->chaves[i])
+    {
         i++;
     }
 
-    if(i < inicial->numero_chaves && chave == inicial->chaves[i]){
+    if (i < inicial->numero_chaves && chave == inicial->chaves[i])
+    {
         *idxEncontrado = i;
-        
+
         return inicial;
     }
-    else{
-        if(inicial->folha == 1){
+    else
+    {
+        if (inicial->folha == 1)
+        {
             *idxEncontrado = -1;
 
             return NULL;
@@ -258,8 +299,10 @@ struct nodo* buscaAuxiliar(struct nodo* inicial, int32_t chave, int32_t* idxEnco
 /*Retorna o endereço do nodo que contém a chave sendo buscada, e insere o índice onde essa
 chave se encontra dentro de idxEncontrado. Caso não encontre a chave, retorna NULL e
 insere -1 em idxEncontrado.*/
-struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave, int32_t* idxEncontrado){
-    if (arvore->raiz == NULL){
+struct nodo *buscarArvoreB(struct arvoreB *arvore, int32_t chave, int32_t *idxEncontrado)
+{
+    if (arvore->raiz == NULL)
+    {
         *idxEncontrado = -1;
 
         return NULL;
@@ -268,36 +311,295 @@ struct nodo* buscarArvoreB(struct arvoreB* arvore, int32_t chave, int32_t* idxEn
     return (buscaAuxiliar(arvore->raiz, chave, idxEncontrado));
 }
 
-void apaga_valores_nodo(struct nodo *no){
-        free(no->chaves);
-        free(no->filhos);
-        free(no);
-        return;
+void apaga_valores_nodo(struct nodo *no)
+{
+    free(no->chaves);
+    free(no->filhos);
+    free(no);
+    return;
 }
 
 /*Libera toda a memória alocada. Ou seja, todos os nodos são liberados, além da struct
 arvoreB passada como parâmetro.*/
-void libera_nodos(struct nodo *no){
+void libera_nodos(struct nodo *no)
+{
 
-    if(no == NULL){
+    if (no == NULL)
+    {
         return;
     }
-    
-    
-    for(int i=0;i <= no->numero_chaves;i++){
+
+    for (int i = 0; i <= no->numero_chaves; i++)
+    {
         libera_nodos(no->filhos[i]);
     }
     apaga_valores_nodo(no);
     return;
 }
 
-void deletarArvore(struct arvoreB* arvore){
-    if(arvore == NULL){
+void deletarArvore(struct arvoreB *arvore){
+    if (arvore == NULL)
+    {
         return;
     }
-    
+
     libera_nodos(arvore->raiz);
-    free(arvore);    
-    
+    free(arvore);
+
     return;
 };
+
+void rotacao_direita(struct nodo *pai, int indice_filho){
+
+    struct nodo *filho = pai->filhos[indice_filho];
+    struct nodo *irmao = pai->filhos[indice_filho - 1];
+
+    for (int i = filho->numero_chaves; i > 0; i--){
+        filho->chaves[i] = filho->chaves[i - 1];
+    }
+
+    if (!filho->folha)
+    {
+        for (int i = filho->numero_chaves + 1; i > 0; i--)
+        {
+            filho->filhos[i] = filho->filhos[i - 1];
+        }
+    }
+
+    filho->chaves[0] = pai->chaves[indice_filho - 1];
+
+    pai->chaves[indice_filho - 1] =irmao->chaves[irmao->numero_chaves - 1];
+
+    if (!irmao->folha)
+    {
+        filho->filhos[0] =irmao->filhos[irmao->numero_chaves];
+    }
+
+    filho->numero_chaves++;
+    irmao->numero_chaves--;
+}
+
+void rotacao_esquerda(struct nodo *pai, int indice_filho){
+
+    struct nodo *filho = pai->filhos[indice_filho];
+    struct nodo *irmao = pai->filhos[indice_filho + 1];
+
+    filho->chaves[filho->numero_chaves] =pai->chaves[indice_filho];
+
+    pai->chaves[indice_filho] = irmao->chaves[0];
+
+    if (!filho->folha)
+    {
+        filho->filhos[filho->numero_chaves + 1] =irmao->filhos[0];
+    }
+
+    filho->numero_chaves++;
+
+    for (int i = 0; i < irmao->numero_chaves - 1; i++){
+        irmao->chaves[i] = irmao->chaves[i + 1];
+    }
+
+    if (!irmao->folha)
+    {
+        for (int i = 0; i < irmao->numero_chaves; i++)
+        {
+            irmao->filhos[i] = irmao->filhos[i + 1];
+        }
+    }
+
+    irmao->numero_chaves--;
+}
+
+int32_t menor_chave(struct nodo *y){
+
+    while (!y->folha)
+    {
+        y = y->filhos[0];
+    }
+
+    return y->chaves[0];
+}
+
+int32_t maior_chave(struct nodo *y){
+
+    while (!y->folha)
+    {
+        y = y->filhos[y->numero_chaves];
+    }
+
+    return y->chaves[y->numero_chaves - 1];
+}
+
+void excluir_nodo(struct nodo *nodo_e){
+    if (nodo_e == NULL)
+        return;
+
+    free(nodo_e);
+}
+
+void remove_direto(int32_t i, struct nodo *nodo1){
+
+    for (int p = i; p < (nodo1->numero_chaves - 1); p++){
+        nodo1->chaves[p] = nodo1->chaves[p + 1];
+    }
+
+    for (int k = i + 1; k < nodo1->numero_chaves; k++){
+        nodo1->filhos[k] = nodo1->filhos[k + 1];
+    }
+
+    nodo1->numero_chaves--;
+}
+
+void merge(struct nodo *nodo1, struct nodo *nodo2, int32_t chave){
+
+    int n_original_n1 = nodo1->numero_chaves;
+
+    nodo1->chaves[nodo1->numero_chaves] = chave;
+    nodo1->numero_chaves++;
+
+    for (int i = 0; i < nodo2->numero_chaves; i++){
+        nodo1->chaves[nodo1->numero_chaves] = nodo2->chaves[i];
+        nodo1->numero_chaves++;
+    }
+
+    if (!nodo1->folha){
+        for (int k = 0; k <= nodo2->numero_chaves; k++)
+        {
+            nodo1->filhos[n_original_n1 + 1 + k] = nodo2->filhos[k];
+        }
+    }
+}
+
+bool removerChave(struct arvoreB *arvore,struct nodo *nodo1,int32_t chave)
+{
+    int i = 0;
+
+    while(i < nodo1->numero_chaves &&chave > nodo1->chaves[i]){
+        i++;
+    }
+
+    int32_t t = arvore->t_arvore;
+
+
+    if(i < nodo1->numero_chaves && chave == nodo1->chaves[i]){
+
+        if(nodo1->folha){
+            remove_direto(i, nodo1);
+            return true;
+        }
+
+        if(nodo1->filhos[i]->numero_chaves >= t){
+            struct nodo *y = nodo1->filhos[i];
+
+            int32_t pred = maior_chave(y);
+
+            nodo1->chaves[i] = pred;
+
+            return removerChave(arvore,y,pred);
+        }
+
+        else if(nodo1->filhos[i + 1]->numero_chaves >= t){
+            struct nodo *z = nodo1->filhos[i + 1];
+
+            int32_t succ = menor_chave(z);
+
+            nodo1->chaves[i] = succ;
+
+            return removerChave(arvore,z,succ);
+        }
+
+        else{
+            int32_t k = nodo1->chaves[i];
+
+            struct nodo *esquerda =nodo1->filhos[i];
+
+            struct nodo *direita =nodo1->filhos[i + 1];
+
+            merge(esquerda,direita,k);
+
+            remove_direto(i, nodo1);
+
+            excluir_nodo(direita);
+
+            nodo1->filhos[nodo1->numero_chaves + 1] = NULL;
+
+            if(nodo1 == arvore->raiz && nodo1->numero_chaves == 0){
+                arvore->raiz = esquerda;
+                excluir_nodo(nodo1);
+
+                if(arvore->raiz == NULL)
+                    return true;
+
+                return removerChave(arvore,arvore->raiz,chave);
+            }
+
+            return removerChave(arvore,esquerda,chave);
+        }
+    }else{
+        if(nodo1->folha){
+            return false;
+        }
+
+        struct nodo *filho =nodo1->filhos[i];
+
+        if(filho->numero_chaves == t - 1){
+            if(i > 0 && nodo1->filhos[i - 1]->numero_chaves >= t){
+                rotacao_direita(nodo1, i);
+            }else if(i < nodo1->numero_chaves && nodo1->filhos[i + 1]->numero_chaves >= t){
+                rotacao_esquerda(nodo1, i);
+            }
+
+            else
+            {
+                if(i < nodo1->numero_chaves){
+                    struct nodo *esquerda = nodo1->filhos[i];
+
+                    struct nodo *direita = nodo1->filhos[i + 1];
+
+                    merge(esquerda,direita,nodo1->chaves[i]);
+
+                    remove_direto(i, nodo1);
+
+                    excluir_nodo(direita);
+
+                    nodo1->filhos[nodo1->numero_chaves + 1] = NULL;
+                }
+
+                else{
+                    struct nodo *esquerda =nodo1->filhos[i - 1];
+
+                    struct nodo *direita = nodo1->filhos[i];
+
+                    merge(esquerda, direita,nodo1->chaves[i - 1]);
+
+                    remove_direto(i - 1, nodo1);
+
+                    excluir_nodo(direita);
+
+                    nodo1->filhos[nodo1->numero_chaves + 1] = NULL;
+
+                    i--;
+                }
+
+                if(nodo1 == arvore->raiz &&
+                   nodo1->numero_chaves == 0)
+                {
+                    arvore->raiz =
+                        nodo1->filhos[0];
+
+                    excluir_nodo(nodo1);
+
+                    nodo1 = arvore->raiz;
+                }
+            }
+        }
+
+        return removerChave(arvore,nodo1->filhos[i],chave);
+    }
+}
+bool removerChaveArvoreB(struct arvoreB *arvore, int32_t chave){
+    if (arvore == NULL || arvore->raiz == NULL){
+        return false;
+    }
+    return removerChave(arvore,arvore->raiz,chave);
+}
