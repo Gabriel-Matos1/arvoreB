@@ -1,8 +1,8 @@
 CC = gcc-14
 CFLAGS = -Wall -Wextra -g3 -std=c23
 
-TARGET = prova1_GRR
-SRC = main.c arvoreB.c
+TARGET = prova1_GRR_teste
+SRC = main.c arvoreB.c fila.c
 OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)

@@ -38,4 +38,6 @@ void deletarArvore(struct arvoreB* arvore);
 
 /*Libera toda a memória alocada. Ou seja, todos os nodos são liberados, além da struct
 arvoreB passada como parâmetro.*/
+bool removerChaveArvoreB(struct arvoreB *arvore, int32_t chave);
+
 #endif

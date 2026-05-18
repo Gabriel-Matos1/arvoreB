@@ -337,8 +337,7 @@ void libera_nodos(struct nodo *no)
     return;
 }
 
-void deletarArvore(struct arvoreB *arvore)
-{
+void deletarArvore(struct arvoreB *arvore){
     if (arvore == NULL)
     {
         return;
@@ -350,19 +349,15 @@ void deletarArvore(struct arvoreB *arvore)
     return;
 };
 
-void rotacao_direita(struct nodo *pai, int indice_filho)
-{
+void rotacao_direita(struct nodo *pai, int indice_filho){
 
     struct nodo *filho = pai->filhos[indice_filho];
     struct nodo *irmao = pai->filhos[indice_filho - 1];
 
-    // abre espaço nas chaves
-    for (int i = filho->numero_chaves; i > 0; i--)
-    {
+    for (int i = filho->numero_chaves; i > 0; i--){
         filho->chaves[i] = filho->chaves[i - 1];
     }
 
-    // abre espaço nos filhos
     if (!filho->folha)
     {
         for (int i = filho->numero_chaves + 1; i > 0; i--)
@@ -371,53 +366,39 @@ void rotacao_direita(struct nodo *pai, int indice_filho)
         }
     }
 
-    // desce chave do pai
     filho->chaves[0] = pai->chaves[indice_filho - 1];
 
-    // sobe chave do irmão
-    pai->chaves[indice_filho - 1] =
-        irmao->chaves[irmao->numero_chaves - 1];
+    pai->chaves[indice_filho - 1] =irmao->chaves[irmao->numero_chaves - 1];
 
-    // move filho do irmão
     if (!irmao->folha)
     {
-        filho->filhos[0] =
-            irmao->filhos[irmao->numero_chaves];
+        filho->filhos[0] =irmao->filhos[irmao->numero_chaves];
     }
 
     filho->numero_chaves++;
     irmao->numero_chaves--;
 }
 
-void rotacao_esquerda(struct nodo *pai, int indice_filho)
-{
+void rotacao_esquerda(struct nodo *pai, int indice_filho){
 
     struct nodo *filho = pai->filhos[indice_filho];
     struct nodo *irmao = pai->filhos[indice_filho + 1];
 
-    // desce chave do pai
-    filho->chaves[filho->numero_chaves] =
-        pai->chaves[indice_filho];
+    filho->chaves[filho->numero_chaves] =pai->chaves[indice_filho];
 
-    // sobe chave do irmão
     pai->chaves[indice_filho] = irmao->chaves[0];
 
-    // move primeiro filho do irmão
     if (!filho->folha)
     {
-        filho->filhos[filho->numero_chaves + 1] =
-            irmao->filhos[0];
+        filho->filhos[filho->numero_chaves + 1] =irmao->filhos[0];
     }
 
     filho->numero_chaves++;
 
-    // desloca chaves do irmão
-    for (int i = 0; i < irmao->numero_chaves - 1; i++)
-    {
+    for (int i = 0; i < irmao->numero_chaves - 1; i++){
         irmao->chaves[i] = irmao->chaves[i + 1];
     }
 
-    // desloca filhos do irmão
     if (!irmao->folha)
     {
         for (int i = 0; i < irmao->numero_chaves; i++)
@@ -429,8 +410,7 @@ void rotacao_esquerda(struct nodo *pai, int indice_filho)
     irmao->numero_chaves--;
 }
 
-int32_t menor_chave(struct nodo *y)
-{
+int32_t menor_chave(struct nodo *y){
 
     while (!y->folha)
     {
@@ -440,8 +420,7 @@ int32_t menor_chave(struct nodo *y)
     return y->chaves[0];
 }
 
-int32_t maior_chave(struct nodo *y)
-{
+int32_t maior_chave(struct nodo *y){
 
     while (!y->folha)
     {
@@ -450,56 +429,40 @@ int32_t maior_chave(struct nodo *y)
 
     return y->chaves[y->numero_chaves - 1];
 }
-void excluir_nodo(struct nodo *nodo_e)
-{
+
+void excluir_nodo(struct nodo *nodo_e){
     if (nodo_e == NULL)
         return;
 
     free(nodo_e);
 }
 
-void remove_direto(int32_t i, struct nodo *nodo1)
-{
+void remove_direto(int32_t i, struct nodo *nodo1){
 
-    // desloca chaves
-    for (int p = i; p < (nodo1->numero_chaves - 1); p++)
-    {
+    for (int p = i; p < (nodo1->numero_chaves - 1); p++){
         nodo1->chaves[p] = nodo1->chaves[p + 1];
     }
 
-    // desloca filhos
-    if (!nodo1->folha)
-    {
-        for (int k = i + 1; k <= nodo1->numero_chaves; k++)
-        {
-            nodo1->filhos[k] = nodo1->filhos[k + 1];
-        }
+    for (int k = i + 1; k < nodo1->numero_chaves; k++){
+        nodo1->filhos[k] = nodo1->filhos[k + 1];
     }
 
     nodo1->numero_chaves--;
 }
 
-void merge(struct nodo *nodo1,
-           struct nodo *nodo2,
-           int32_t chave)
-{
+void merge(struct nodo *nodo1, struct nodo *nodo2, int32_t chave){
 
     int n_original_n1 = nodo1->numero_chaves;
 
-    // coloca chave do pai
     nodo1->chaves[nodo1->numero_chaves] = chave;
     nodo1->numero_chaves++;
 
-    // copia chaves do segundo nodo
-    for (int i = 0; i < nodo2->numero_chaves; i++)
-    {
+    for (int i = 0; i < nodo2->numero_chaves; i++){
         nodo1->chaves[nodo1->numero_chaves] = nodo2->chaves[i];
         nodo1->numero_chaves++;
     }
 
-    // copia filhos
-    if (!nodo1->folha)
-    {
+    if (!nodo1->folha){
         for (int k = 0; k <= nodo2->numero_chaves; k++)
         {
             nodo1->filhos[n_original_n1 + 1 + k] = nodo2->filhos[k];
@@ -507,130 +470,136 @@ void merge(struct nodo *nodo1,
     }
 }
 
-bool removerChave(struct arvoreB *arvore,
-                  struct nodo *nodo1,
-                  int32_t chave)
+bool removerChave(struct arvoreB *arvore,struct nodo *nodo1,int32_t chave)
 {
     int i = 0;
-    while (i < nodo1->numero_chaves &&
-           chave > nodo1->chaves[i])
-    {
+
+    while(i < nodo1->numero_chaves &&chave > nodo1->chaves[i]){
         i++;
     }
+
     int32_t t = arvore->t_arvore;
-    // chave encontrada
-    if (i < nodo1->numero_chaves &&
-        chave == nodo1->chaves[i])
-    {
-        // caso 1
-        if (nodo1->folha)
-        {
+
+
+    if(i < nodo1->numero_chaves && chave == nodo1->chaves[i]){
+
+        if(nodo1->folha){
             remove_direto(i, nodo1);
             return true;
         }
-        // caso 2a
-        if (nodo1->filhos[i]->numero_chaves >= t)
-        {
+
+        if(nodo1->filhos[i]->numero_chaves >= t){
             struct nodo *y = nodo1->filhos[i];
+
             int32_t pred = maior_chave(y);
+
             nodo1->chaves[i] = pred;
-            return removerChave(arvore, y, pred);
+
+            return removerChave(arvore,y,pred);
         }
-        // caso 2b
-        else if (nodo1->filhos[i + 1]->numero_chaves >= t)
-        {
+
+        else if(nodo1->filhos[i + 1]->numero_chaves >= t){
             struct nodo *z = nodo1->filhos[i + 1];
 
             int32_t succ = menor_chave(z);
+
             nodo1->chaves[i] = succ;
-            return removerChave(arvore, z, succ);
+
+            return removerChave(arvore,z,succ);
         }
-        // caso 2c
-        else
-        {
+
+        else{
             int32_t k = nodo1->chaves[i];
-            merge(nodo1->filhos[i],
-                  nodo1->filhos[i + 1],
-                  k);
-            struct nodo *irmao = nodo1->filhos[i + 1];
+
+            struct nodo *esquerda =nodo1->filhos[i];
+
+            struct nodo *direita =nodo1->filhos[i + 1];
+
+            merge(esquerda,direita,k);
+
             remove_direto(i, nodo1);
-            excluir_nodo(irmao);
-            if (nodo1 == arvore->raiz &&
-                nodo1->numero_chaves == 0)
-            {
-                arvore->raiz = nodo1->filhos[0];
+
+            excluir_nodo(direita);
+
+            nodo1->filhos[nodo1->numero_chaves + 1] = NULL;
+
+            if(nodo1 == arvore->raiz && nodo1->numero_chaves == 0){
+                arvore->raiz = esquerda;
                 excluir_nodo(nodo1);
-                return removerChave(arvore,
-                                    arvore->raiz,
-                                    chave);
+
+                if(arvore->raiz == NULL)
+                    return true;
+
+                return removerChave(arvore,arvore->raiz,chave);
             }
-            return removerChave(arvore,
-                                nodo1->filhos[i],
-                                chave);
+
+            return removerChave(arvore,esquerda,chave);
         }
-    }
-    // chave não encontrada
-    else
-    {
-        if (nodo1->folha)
-        {
+    }else{
+        if(nodo1->folha){
             return false;
         }
-        struct nodo *filho = nodo1->filhos[i];
-        // caso 3
-        if (filho->numero_chaves == t - 1)
-        {
 
-            // 3a esquerda
-            if (i > 0 &&
-                nodo1->filhos[i - 1]->numero_chaves >= t)
-            {
+        struct nodo *filho =nodo1->filhos[i];
+
+        if(filho->numero_chaves == t - 1){
+            if(i > 0 && nodo1->filhos[i - 1]->numero_chaves >= t){
                 rotacao_direita(nodo1, i);
-            }
-            // 3a direita
-            else if (i < nodo1->numero_chaves &&
-                     nodo1->filhos[i + 1]->numero_chaves >= t)
-            {
+            }else if(i < nodo1->numero_chaves && nodo1->filhos[i + 1]->numero_chaves >= t){
                 rotacao_esquerda(nodo1, i);
             }
-            // 3b merge
+
             else
             {
-                if (i < nodo1->numero_chaves)
-                {
-                    merge(nodo1->filhos[i],
-                          nodo1->filhos[i + 1],
-                          nodo1->chaves[i]);
-                    struct nodo *irmao =
-                        nodo1->filhos[i + 1];
+                if(i < nodo1->numero_chaves){
+                    struct nodo *esquerda = nodo1->filhos[i];
+
+                    struct nodo *direita = nodo1->filhos[i + 1];
+
+                    merge(esquerda,direita,nodo1->chaves[i]);
+
                     remove_direto(i, nodo1);
-                    excluir_nodo(irmao);
+
+                    excluir_nodo(direita);
+
+                    nodo1->filhos[nodo1->numero_chaves + 1] = NULL;
                 }
-                else
-                {
-                    merge(nodo1->filhos[i - 1],
-                          nodo1->filhos[i],
-                          nodo1->chaves[i - 1]);
-                    struct nodo *filho_atual =
-                        nodo1->filhos[i];
+
+                else{
+                    struct nodo *esquerda =nodo1->filhos[i - 1];
+
+                    struct nodo *direita = nodo1->filhos[i];
+
+                    merge(esquerda, direita,nodo1->chaves[i - 1]);
+
                     remove_direto(i - 1, nodo1);
-                    excluir_nodo(filho_atual);
+
+                    excluir_nodo(direita);
+
+                    nodo1->filhos[nodo1->numero_chaves + 1] = NULL;
+
                     i--;
+                }
+
+                if(nodo1 == arvore->raiz &&
+                   nodo1->numero_chaves == 0)
+                {
+                    arvore->raiz =
+                        nodo1->filhos[0];
+
+                    excluir_nodo(nodo1);
+
+                    nodo1 = arvore->raiz;
                 }
             }
         }
-        return removerChave(arvore,
-                            nodo1->filhos[i], chave);
+
+        return removerChave(arvore,nodo1->filhos[i],chave);
     }
 }
-
-bool removerChaveArvoreB(struct arvoreB *arvore, int32_t chave)
-{
-    if (arvore == NULL || arvore->raiz == NULL)
-    {
+bool removerChaveArvoreB(struct arvoreB *arvore, int32_t chave){
+    if (arvore == NULL || arvore->raiz == NULL){
         return false;
     }
-    return removerChave(arvore,
-                        arvore->raiz,
-                        chave);
+    return removerChave(arvore,arvore->raiz,chave);
 }
